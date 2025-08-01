@@ -257,12 +257,6 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  {/* Drawer Footer */}
-                  <div className="p-4 sm:p-6 border-t border-white/10">
-                    <div className="text-center text-gray-400 text-xs sm:text-sm">
-                      © 2025 Your Portfolio
-                    </div>
-                  </div>
                 </div>
               </div>
             </>
