@@ -149,7 +149,7 @@ const Hero = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-slate-900/30 via-transparent to-slate-900/30 z-10" />
                   <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
                     <img 
-                      src="src/assets/7fb9010a-e2dd-434d-8420-eaf48ddafd37.png" 
+                      src="https://lebwork.b-cdn.net/7fb9010a-e2dd-434d-8420-eaf48ddafd37.png" 
                       alt="Profile" 
                       loading="lazy"
                       className="object-cover w-full h-full"
