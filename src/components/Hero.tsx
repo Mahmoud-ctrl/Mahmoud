@@ -11,7 +11,7 @@ const Hero = () => {
     { icon: Github, href: 'https://github.com/Mahmoud-ctrl', label: 'GitHub' },
     { icon: Linkedin, href: 'https://www.linkedin.com/in/mahmoud-baderaldin-540399378/', label: 'LinkedIn' },
     { icon: Mail, href: 'mailto:baderaldinmahmud@email.com', label: 'Email' },
-    { icon: FileX2, href:'#', label: 'CV' },
+    { icon: FileX2, href:'/Mahmud_Baderaldin_CV.pdf', label: 'CV', download: true },
   ], []);
 
   const personalStatement = "I architect and build robust, scalable, and intuitive digital solutions that drive business growth and enhance user experiences. My expertise spans the full software development lifecycle, from concept to deployment.";
@@ -149,7 +149,7 @@ const Hero = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-slate-900/30 via-transparent to-slate-900/30 z-10" />
                   <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
                     <img 
-                      src="src/assets/7fb9010a-e2dd-434d-8420-eaf48ddafd37.png" 
+                      src="https://lebwork.b-cdn.net/7fb9010a-e2dd-434d-8420-eaf48ddafd37.png" 
                       alt="Profile" 
                       loading="lazy"
                       className="object-cover w-full h-full"
@@ -231,15 +231,17 @@ const Hero = () => {
                     custom={index}
                     href={social.href}
                     target="_blank"
-                    rel="noopener noreferrer" 
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     className="group flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-xl bg-slate-800/30 border border-slate-700/30 hover:bg-slate-800/50 hover:border-slate-600/50 transition-all duration-300"
+                    {...(social.download ? { download: true } : {})}
                   >
                     <social.icon size={14} className="text-slate-400 group-hover:text-blue-400 transition-colors sm:w-[16px] sm:h-[16px]" />
                     <span className="text-slate-400 text-xs sm:text-sm group-hover:text-slate-300 transition-colors">{social.label}</span>
                   </motion.a>
                 ))}
+
               </div>
             </motion.div>
           </motion.div>

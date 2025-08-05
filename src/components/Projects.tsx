@@ -103,7 +103,6 @@ const Projects = () => {
 
   return (
     <section id="projects" className="py-12 sm:py-16 lg:py-20 bg-[#080809] relative overflow-hidden" ref={ref}>
-      {/* Background Elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
@@ -168,7 +167,6 @@ const Projects = () => {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {/* Featured Projects */}
           {projects
             .filter(project => project.featured)
             .map((project, index) => (

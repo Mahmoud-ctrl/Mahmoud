@@ -13,7 +13,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when screen size changes
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768 && isOpen) {
@@ -24,7 +23,6 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [isOpen]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -50,7 +48,6 @@ const Navbar = () => {
 
   const handleNavClick = (href: string) => {
     setIsOpen(false);
-    // Smooth scroll to section
     setTimeout(() => {
       const element = document.querySelector(href);
       if (element) {
@@ -137,7 +134,6 @@ const Navbar = () => {
       
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'py-1 sm:py-2' : 'py-2 sm:py-4'}`}>
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-          {/* Main Navigation Container */}
           <div 
             className={`nav-glow flex items-center justify-between h-12 sm:h-14 px-3 sm:px-4 lg:px-6 rounded-xl sm:rounded-2xl transition-all duration-700 ${
               scrolled ? 'backdrop-blur-xl' : 'backdrop-blur-md'
@@ -151,12 +147,10 @@ const Navbar = () => {
                 : '0 4px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
             }}
           >
-            {/* Logo/Brand */}
             <div className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent cursor-pointer hover:scale-105 transition-all duration-300 touch-target flex items-center justify-center">
               MB
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1">
               {navItems.map((item, index) => (
                 <a
@@ -171,16 +165,13 @@ const Navbar = () => {
                 >
                   <span className="text-sm lg:text-base">{item.label}</span>
                   
-                  {/* Hover background */}
                   <div className="absolute inset-0 rounded-lg lg:rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10" />
                   
-                  {/* Active indicator dot */}
                   <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300" />
                 </a>
               ))}
             </div>
 
-            {/* Mobile menu button */}
             <button
               onClick={toggleMenu}
               className="md:hidden p-2 text-gray-300 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/10 z-50 touch-target flex items-center justify-center"
@@ -192,17 +183,14 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile Navigation Drawer */}
           {isOpen && (
             <>
-              {/* Overlay */}
               <div 
                 className="fixed inset-0 z-40 drawer-overlay"
                 onClick={() => setIsOpen(false)}
                 aria-hidden="true"
               />
               
-              {/* Drawer */}
               <div className={`fixed top-0 right-0 h-full z-50 drawer-enter ${
                 window.innerWidth < 640 ? 'mobile-drawer' : 'w-72 sm:w-80'
               }`}>
@@ -216,7 +204,6 @@ const Navbar = () => {
                     borderRight: 'none'
                   }}
                 >
-                  {/* Drawer Header */}
                   <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/10">
                     <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent">
                       MB
@@ -257,12 +244,6 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  {/* Drawer Footer */}
-                  <div className="p-4 sm:p-6 border-t border-white/10">
-                    <div className="text-center text-gray-400 text-xs sm:text-sm">
-                      © 2025 Your Portfolio
-                    </div>
-                  </div>
                 </div>
               </div>
             </>
