@@ -67,7 +67,7 @@ const projects: Project[] = [
     description: "A powerful, intuitive system that transforms complex dental scheduling into seamless, efficient appointments, enhancing both patient experience and clinic workflow.",
     image: "https://lebwork.b-cdn.net/stuff/istockphoto-1152845300-2048x2048.jpg",
     tech: ["React", "Tailwind CSS","Netlify"],
-    github: "#https://github.com/Mahmoud-ctrl/Booknest",
+    github: "https://github.com/Mahmoud-ctrl/Booknest",
     live: "https://preeminent-kashata-bc8bb1.netlify.app/",
     year: "2024",
     category: "Appointment Booking"
@@ -86,7 +86,7 @@ const ProjectPanel: React.FC<{
   return (
     <motion.div
       id='projects'
-      className="min-w-full h-screen flex items-center justify-center relative overflow-hidden"
+      className="min-w-full min-h-screen flex items-center justify-center relative overflow-hidden px-4 sm:px-6 lg:px-8 py-8 sm:py-12"
       initial={{ opacity: 0, x: 100 }}
       animate={{ 
         opacity: heroProgress > 0.5 ? 1 : 0,
@@ -122,14 +122,14 @@ const ProjectPanel: React.FC<{
       </motion.div>
 
       {/* Content Grid */}
-      <div className="relative z-20 max-w-7xl mx-auto px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center h-full">
+      <div className="relative z-20 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-16 items-center min-h-[80vh] lg:min-h-full">
           
           {/* Left Content - Project Info */}
-          <div className="lg:col-span-6 space-y-8">
+          <div className="lg:col-span-6 space-y-4 sm:space-y-6 lg:space-y-8 order-2 lg:order-1">
             {/* Project Number & Meta */}
             <motion.div
-              className="flex items-start gap-6"
+              className="flex items-start gap-3 sm:gap-4 lg:gap-6"
               initial={{ opacity: 0, x: -50 }}
               animate={{
                 opacity: isActive ? 1 : 0.7,
@@ -137,14 +137,14 @@ const ProjectPanel: React.FC<{
               }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <span className="text-7xl md:text-9xl font-bold text-white/20 leading-none">
+              <span className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-bold text-white/20 leading-none">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <div className="pt-4">
-                <p className="text-white/60 text-sm tracking-widest uppercase mb-2">
+              <div className="pt-2 sm:pt-3 lg:pt-4">
+                <p className="text-white/60 text-xs sm:text-sm tracking-widest uppercase mb-1 sm:mb-2">
                   {project.year} • {project.category}
                 </p>
-                <div className="w-16 h-px bg-white/30" />
+                <div className="w-12 sm:w-16 h-px bg-white/30" />
               </div>
             </motion.div>
 
@@ -157,17 +157,17 @@ const ProjectPanel: React.FC<{
               }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.9] mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-bold text-white leading-[0.9] mb-2 sm:mb-3 lg:mb-4">
                 {project.title}
               </h2>
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-light text-white/80 mb-6">
+              <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl xl:text-3xl font-light text-white/80 mb-3 sm:mb-4 lg:mb-6">
                 {project.subtitle}
               </h3>
             </motion.div>
 
             {/* Description */}
             <motion.p 
-              className="text-base md:text-lg text-white/70 leading-relaxed max-w-md"
+              className="text-sm sm:text-base lg:text-lg text-white/70 leading-relaxed max-w-none lg:max-w-md"
               initial={{ opacity: 0, y: 20 }}
               animate={{
                 opacity: isActive ? 1 : 0.6,
@@ -180,7 +180,7 @@ const ProjectPanel: React.FC<{
 
             {/* Tech Stack */}
             <motion.div 
-              className="flex flex-wrap gap-2"
+              className="flex flex-wrap gap-1.5 sm:gap-2"
               initial={{ opacity: 0, y: 20 }}
               animate={{
                 opacity: isActive ? 1 : 0.7,
@@ -191,7 +191,7 @@ const ProjectPanel: React.FC<{
               {project.tech.map((tech) => (
                 <motion.span
                   key={tech}
-                  className="px-3 py-1.5 text-sm font-medium text-white/80 border border-white/20 rounded-full backdrop-blur-sm"
+                  className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium text-white/80 border border-white/20 rounded-full backdrop-blur-sm"
                   whileHover={{ 
                     backgroundColor: 'rgba(255,255,255,0.1)',
                     scale: 1.05 
@@ -205,7 +205,7 @@ const ProjectPanel: React.FC<{
 
             {/* Action Buttons */}
             <motion.div 
-              className="flex gap-4 pt-4"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{
                 opacity: isActive ? 1 : 0.7,
@@ -216,25 +216,29 @@ const ProjectPanel: React.FC<{
               {project.live && (
                 <motion.a
                   href={project.live}
-                  className="flex items-center gap-2 px-6 py-3 bg-white text-black font-medium rounded-full hover:bg-white/90 transition-all duration-300 group text-sm md:text-base"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-black font-medium rounded-full hover:bg-white/90 transition-all duration-300 group text-sm sm:text-base"
                   whileHover={{ scale: 1.05, gap: '0.75rem' }}
                   whileTap={{ scale: 0.95 }}
                 >
                   View Live
                   <ArrowUpRight 
-                    size={18} 
-                    className="group-hover:rotate-45 transition-transform duration-300" 
+                    size={16} 
+                    className="sm:w-[18px] sm:h-[18px] group-hover:rotate-45 transition-transform duration-300" 
                   />
                 </motion.a>
               )}
               {project.github && (
                 <motion.a
                   href={project.github}
-                  className="flex items-center gap-2 px-6 py-3 border border-white/30 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 group text-sm md:text-base"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 border border-white/30 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 group text-sm sm:text-base"
                   whileHover={{ scale: 1.05, gap: '0.75rem' }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Github size={18} />
+                  <Github size={16} className="sm:w-[18px] sm:h-[18px]" />
                   Source
                 </motion.a>
               )}
@@ -242,9 +246,9 @@ const ProjectPanel: React.FC<{
           </div>
 
           {/* Right Content - Visual Element */}
-          <div className="lg:col-span-5 lg:col-start-8 flex justify-center lg:justify-end">
+          <div className="lg:col-span-5 lg:col-start-8 flex justify-center lg:justify-end order-1 lg:order-2">
             <motion.div
-              className="relative w-full max-w-md aspect-[3/4] rounded-2xl overflow-hidden"
+              className="relative w-full max-w-[280px] sm:max-w-sm md:max-w-md aspect-[3/4] rounded-2xl overflow-hidden"
               animate={{
                 scale: isHovered ? 1.02 : 1,
                 rotate: isHovered ? (index % 2 === 0 ? 1 : -1) : 0,
@@ -265,7 +269,7 @@ const ProjectPanel: React.FC<{
               
               {/* Floating accent */}
               <motion.div
-                className="absolute -top-4 -right-4 w-24 h-24 rounded-full bg-white/10 backdrop-blur-sm"
+                className="absolute -top-2 sm:-top-4 -right-2 sm:-right-4 w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-white/10 backdrop-blur-sm"
                 animate={{
                   scale: [1, 1.1, 1],
                   opacity: [0.3, 0.6, 0.3],
@@ -291,6 +295,7 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Smooth scrolling with spring physics
   const x = useMotionValue(0);
@@ -301,7 +306,18 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
   });
 
   // Detect if the section is in view
-  const isInView = useInView(containerRef, { amount: 0.5, once: false });
+  const isInView = useInView(containerRef, { amount: 0.3, once: false });
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Navigation functions - wrapped in useCallback to prevent unnecessary re-renders
   const scrollToProject = useCallback((index: number) => {
@@ -332,39 +348,59 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isInView) return;
       if (e.key === 'ArrowLeft') prevProject();
       if (e.key === 'ArrowRight') nextProject();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [nextProject, prevProject]);
+  }, [nextProject, prevProject, isInView]);
 
-  // Touch/swipe handling for mobile
+  // Enhanced touch/swipe handling for mobile
   useEffect(() => {
     let startX = 0;
+    let startY = 0;
     let isDragging = false;
+    let startTime = 0;
 
     const handleTouchStart = (e: TouchEvent) => {
       startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startTime = Date.now();
       isDragging = true;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (!isDragging) return;
-      e.preventDefault();
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const deltaX = Math.abs(currentX - startX);
+      const deltaY = Math.abs(currentY - startY);
+      
+      // Prevent vertical scrolling if horizontal movement is detected
+      if (deltaX > deltaY && deltaX > 20) {
+        e.preventDefault();
+      }
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
       if (!isDragging) return;
       
       const endX = e.changedTouches[0].clientX;
-      const diff = startX - endX;
+      const endTime = Date.now();
+      const deltaX = startX - endX;
+      const deltaTime = endTime - startTime;
+      const velocity = Math.abs(deltaX) / deltaTime;
       
-      if (Math.abs(diff) > 50) { // Minimum swipe distance
-        if (diff > 0) {
+      // Swipe detection: minimum distance OR sufficient velocity
+      if (Math.abs(deltaX) > 50 || (velocity > 0.5 && Math.abs(deltaX) > 30)) {
+        if (deltaX > 0) {
+          // Swiped left - go to next project
           nextProject();
         } else {
+          // Swiped right - go to previous project
           prevProject();
         }
       }
@@ -372,8 +408,8 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
       isDragging = false;
     };
 
-    const container = scrollContainerRef.current;
-    if (container) {
+    const container = containerRef.current;
+    if (container && isMobile) {
       container.addEventListener('touchstart', handleTouchStart, { passive: false });
       container.addEventListener('touchmove', handleTouchMove, { passive: false });
       container.addEventListener('touchend', handleTouchEnd, { passive: false });
@@ -384,7 +420,7 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
         container.removeEventListener('touchend', handleTouchEnd);
       };
     }
-  }, [nextProject, prevProject]);
+  }, [nextProject, prevProject, isMobile]);
 
   return (
     <section 
@@ -395,7 +431,7 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
       {/* Main Horizontal Scroll Container */}
       <motion.div
         ref={scrollContainerRef}
-        className="flex h-screen"
+        className="flex min-h-screen"
         style={{ x: smoothX }}
       >
         {projects.map((project, index) => (
@@ -409,11 +445,11 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
         ))}
       </motion.div>
 
-      {/* Navigation Controls - Only show when section is in view */}
-      {isInView && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+      {/* Navigation Controls - Desktop Only */}
+      {isInView && !isMobile && (
+        <div className="absolute bottom-16 sm:bottom-20 lg:bottom-24 left-1/2 transform -translate-x-1/2 z-50">
           <motion.div 
-            className="flex items-center gap-4 px-6 py-3 bg-black/50 backdrop-blur-sm rounded-full border border-white/20"
+            className="flex items-center justify-center gap-4 px-6 py-3 bg-black/50 backdrop-blur-sm rounded-full border border-white/20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
@@ -461,27 +497,72 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
         </div>
       )}
 
-      {/* Project Counter - Only show when section is in view */}
-      {isInView && (
+      {/* Mobile Side Navigation Arrows */}
+      {isMobile && (
+        <>
+          {/* Left Arrow */}
+          <motion.button
+            onClick={prevProject}
+            disabled={!canScrollLeft}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 p-3 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : -20 }}
+            transition={{ duration: 0.5 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <ChevronLeft size={20} />
+          </motion.button>
+
+          {/* Right Arrow */}
+          <motion.button
+            onClick={nextProject}
+            disabled={!canScrollRight}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 p-3 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : 20 }}
+            transition={{ duration: 0.5 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <ChevronRight size={20} />
+          </motion.button>
+
+          {/* Mobile Progress Counter */}
+          <motion.div 
+            className="absolute top-8 left-1/2 transform -translate-x-1/2 z-50 text-white/60 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : -20 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="text-sm font-mono">
+              <span className="text-white">{String(currentIndex + 1).padStart(2, '0')}</span>
+              <span className="mx-2">/</span>
+              <span>{String(projects.length).padStart(2, '0')}</span>
+            </div>
+          </motion.div>
+        </>
+      )}
+
+      {/* Project Counter - Responsive positioning */}
+      {isInView && !isMobile && (
         <motion.div 
-          className="fixed top-1/2 right-8 transform -translate-y-1/2 z-50 text-white/60"
+          className="absolute top-1/2 right-4 sm:right-6 lg:right-8 transform -translate-y-1/2 z-50 text-white/60"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 20 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="text-sm font-mono tracking-wider">
-            <span className="text-white text-lg">{String(currentIndex + 1).padStart(2, '0')}</span>
-            <span className="mx-2">/</span>
+          <div className="text-xs sm:text-sm font-mono tracking-wider">
+            <span className="text-white text-base sm:text-lg">{String(currentIndex + 1).padStart(2, '0')}</span>
+            <span className="mx-1 sm:mx-2">/</span>
             <span>{String(projects.length).padStart(2, '0')}</span>
           </div>
         </motion.div>
       )}
 
-      {/* Progress Bar - Only show when section is in view */}
+      {/* Progress Bar */}
       {isInView && (
         <motion.div 
-          className="fixed bottom-0 left-0 right-0 h-1 bg-white/10 z-50"
+          className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-white/10 z-40"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -497,16 +578,29 @@ const HorizontalProjects: React.FC<ProjectsProps> = ({ heroScrollProgress }) => 
         </motion.div>
       )}
 
-      {/* Keyboard Hint - Only show when section is in view */}
-      {isInView && (
+      {/* Keyboard Hint - Only show on desktop */}
+      {isInView && !isMobile && (
         <motion.div
-          className="fixed bottom-20 right-8 text-white/40 text-xs z-40"
+          className="absolute bottom-28 sm:bottom-32 lg:bottom-36 right-4 sm:right-6 lg:right-8 text-white/40 text-xs z-40"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ delay: 2, duration: 1 }}
         >
           <p>← → Navigate</p>
+        </motion.div>
+      )}
+
+      {/* Mobile swipe hint */}
+      {isInView && isMobile && (
+        <motion.div
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white/40 text-xs z-40"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -10 }}
+          transition={{ delay: 2, duration: 1 }}
+        >
+          <p>Swipe to navigate</p>
         </motion.div>
       )}
     </section>

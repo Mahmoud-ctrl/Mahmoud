@@ -28,11 +28,10 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
     { label: 'LinkedIn', link: 'https://www.linkedin.com/in/mahmoud-baderaldin-540399378/' }
   ];
   
-  // Smooth scroll function
   const smoothScrollTo = (elementId: string) => {
     const element = document.getElementById(elementId);
     if (element) {
-      const navbarHeight = 80; // Adjust based on your navbar height
+      const navbarHeight = 80; 
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
 
@@ -43,15 +42,12 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
     }
   };
 
-  // Handle navigation clicks
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, link: string) => {
     e.preventDefault();
     const sectionId = link.replace('#', '');
     smoothScrollTo(sectionId);
     setIsMobileMenuOpen(false);
   };
-
-  // Track active section while scrolling
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -69,7 +65,6 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-    // Observe all sections
     navItems.forEach((item) => {
       const sectionId = item.link.replace('#', '');
       const section = document.getElementById(sectionId);
@@ -96,9 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
     };
   }, [isMobileMenuOpen]);
 
-  // Add smooth scrolling CSS to the document
   useEffect(() => {
-    // Add CSS custom properties for smooth scrolling
     const style = document.createElement('style');
     style.textContent = `
       html {
@@ -140,7 +133,6 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
         animate={{ y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        {/* Animated background */}
         <AnimatePresence>
           {isScrolled && (
             <motion.div
@@ -158,7 +150,6 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
         </AnimatePresence>
 
         <div className="relative max-w-7xl mx-auto px-6 flex items-center justify-between h-12">
-          {/* Logo */}
           <motion.div
             className="hidden md:block text-white font-light text-xl tracking-wider"
             whileHover={{ scale: 1.02 }}
@@ -171,7 +162,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
             >
               <Image 
                 src="https://lebwork.b-cdn.net/stuff/mm-logo.png" 
-                alt="iDevelopit Logo" 
+                alt="Mahmoud Logo" 
                 width={48}
                 height={48}
                 className="w-18 h-18" 
@@ -179,7 +170,6 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
             </a>
           </motion.div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item, index) => {
               const sectionId = item.link.replace('#', '');
@@ -212,7 +202,6 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
             })}
           </div>
 
-          {/* CTA Button */}
           <motion.button
             className="hidden md:block px-6 py-2 border border-white text-white hover:bg-white hover:text-black transition-all duration-300 text-xs tracking-wider uppercase"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -227,10 +216,9 @@ const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         <motion.div
-          className="fixed inset-0 z-[50] overflow-hidden md:hidden"
+          className="fixed inset-0 z-50 overflow-hidden md:hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

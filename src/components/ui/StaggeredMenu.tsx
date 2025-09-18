@@ -204,7 +204,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
     openTlRef.current = tl;
     return tl;
-  }, []); // Removed 'position' dependency as it's not used in the callback
+  }, []);
 
   const playOpen = useCallback(() => {
     if (busyRef.current) return;

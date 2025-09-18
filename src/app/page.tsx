@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
 import Navbar from "@/components/Navbar";
@@ -11,12 +11,21 @@ import ContactForm from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 
+
 export default function Home() {
   const [heroScrollProgress, setHeroScrollProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   return (
     <div className="cursor-none">
-      <SmoothCursor />
+      {!isMobile && <SmoothCursor />}
       <Navbar scrollProgress={heroScrollProgress} />
       <Hero onScrollProgress={setHeroScrollProgress}/>
       <AboutSection />

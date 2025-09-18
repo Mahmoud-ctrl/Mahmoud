@@ -1,4 +1,3 @@
-// src/app/api/contact/route.ts
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
@@ -6,15 +5,12 @@ export async function POST(req: Request) {
   try {
     const { name, email, phone, subject, message } = await req.json();
 
-    // Validate required fields
     if (!name || !email || !message) {
       return NextResponse.json(
         { success: false, error: "Name, email, and message are required." },
         { status: 400 }
       );
     }
-
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -23,7 +19,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Setup transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -32,7 +27,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // Create HTML email content
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
         <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
@@ -79,7 +73,6 @@ export async function POST(req: Request) {
       </div>
     `;
 
-    // Send email
     await transporter.sendMail({
       from: `"${name}" <${process.env.EMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL,
@@ -103,7 +96,6 @@ Sent from portfolio contact form on ${new Date().toLocaleString()}
   } catch (err) {
     console.error("Error sending email:", err);
     
-    // Return different error messages based on the type of error
     if (err instanceof Error) {
       if (err.message.includes('authentication') || err.message.includes('auth')) {
         return NextResponse.json(
@@ -126,7 +118,6 @@ Sent from portfolio contact form on ${new Date().toLocaleString()}
   }
 }
 
-// Handle unsupported HTTP methods
 export async function GET() {
   return NextResponse.json(
     { error: "Method not allowed" },

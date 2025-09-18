@@ -115,7 +115,6 @@ const getGradientDirection = (position: string): string => {
   return directions[position] || 'to bottom';
 };
 
-// Fix: Replace 'any' with proper generic types
 const debounce = <T extends unknown[]>(fn: (...args: T) => void, wait: number) => {
   let timeout: ReturnType<typeof setTimeout>;
   return (...args: T) => {
@@ -131,7 +130,6 @@ const useResponsiveDimension = (
 ) => {
   const [val, setVal] = useState<string | undefined>(config[key] as string);
   
-  // Fix: Use useCallback to memoize the calculation function
   const calc = useCallback(() => {
     const w = window.innerWidth;
     let v: string | undefined = config[key] as string;
@@ -151,7 +149,7 @@ const useResponsiveDimension = (
     calc();
     window.addEventListener('resize', deb);
     return () => window.removeEventListener('resize', deb);
-  }, [responsive, calc]); // Fix: Include calc in dependencies instead of config
+  }, [responsive, calc]); 
   
   return responsive ? val : (config[key] as string | undefined);
 };

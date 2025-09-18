@@ -7,7 +7,6 @@ import Image from 'next/image';
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
-  // Smooth scroll function (same as navbar)
   const smoothScrollTo = (elementId: string) => {
     const element = document.getElementById(elementId);
     if (element) {
@@ -44,9 +43,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="relative bg-black border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Main Footer Content */}
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-          {/* Logo and Brand Section */}
           <motion.div 
             className="flex items-center space-x-4"
             initial={{ opacity: 0, x: -20 }}
@@ -76,7 +73,6 @@ const Footer: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Navigation Links */}
           <motion.div 
             className="flex items-center space-x-8"
             initial={{ opacity: 0, y: 20 }}
@@ -101,7 +97,6 @@ const Footer: React.FC = () => {
             ))}
           </motion.div>
 
-          {/* Social Links */}
           <motion.div 
             className="flex items-center space-x-6"
             initial={{ opacity: 0, x: 20 }}
@@ -126,7 +121,6 @@ const Footer: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Divider */}
         <motion.div 
           className="w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-8"
           initial={{ scaleX: 0 }}
@@ -135,7 +129,6 @@ const Footer: React.FC = () => {
           viewport={{ once: true }}
         />
 
-        {/* Bottom Section */}
         <motion.div 
           className="flex flex-col md:flex-row items-center justify-between gap-4"
           initial={{ opacity: 0, y: 20 }}
@@ -143,12 +136,10 @@ const Footer: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          {/* Copyright */}
           <div className="text-gray-500 text-xs tracking-wide">
             © {currentYear} Mahmoud Baderaldin. All rights reserved.
           </div>
 
-          {/* Specialties */}
           <div className="flex flex-wrap items-center gap-4 text-xs tracking-widest text-gray-600 uppercase">
             <span>Web Development</span>
             <span className="text-gray-700">•</span>
@@ -159,7 +150,6 @@ const Footer: React.FC = () => {
             <span>Brand Strategy</span>
           </div>
 
-          {/* Back to Top */}
           <motion.button
             onClick={(e) => handleNavClick(e, '#home')}
             className="text-gray-500 hover:text-white transition-colors duration-300 text-xs tracking-wide uppercase group flex items-center space-x-2"

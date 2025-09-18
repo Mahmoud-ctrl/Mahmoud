@@ -121,6 +121,16 @@ const ServicesSection = () => {
       setTimeout(() => {
         setActiveService(serviceId);
         setIsTransitioning(false);
+
+        if (sectionRef.current) {
+          const rect = sectionRef.current.getBoundingClientRect();
+          const scrollTop = window.pageYOffset + rect.top;
+          
+          window.scrollTo({
+            top: scrollTop,
+            behavior: 'smooth'
+          });
+        }
       }, 300);
     }
   };
@@ -357,6 +367,12 @@ const ServicesSection = () => {
               className="px-8 py-3 border border-white text-white hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-wider uppercase font-bold"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                document.getElementById('contact')?.scrollIntoView({ 
+                  behavior: 'smooth',
+                  block: 'start'
+                });
+              }}
             >
               Start a Project
             </motion.button>

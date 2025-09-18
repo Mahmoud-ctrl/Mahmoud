@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useCallback } from 'react';
-import { motion, useTransform, useScroll } from 'framer-motion';
+import { motion, useTransform, useScroll, useInView } from 'framer-motion';
 import LiquidEther from './ui/LiquidEther';
 
 interface HeroProps {
@@ -12,6 +12,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
   const containerRef = useRef<HTMLElement>(null);
   const lastProgressRef = useRef(0);
   const rafRef = useRef<number | null>(null);
+  const isHeroInView = useInView(containerRef, { amount: 0.1 });
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -67,7 +68,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
             iterationsPoisson={32}
             resolution={0.5}
             isBounce={false}
-            autoDemo={true}
+            autoDemo={isHeroInView}
             autoSpeed={0.7} 
             autoIntensity={2.8} 
             takeoverDuration={0.5} 
@@ -82,22 +83,22 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
             opacity,
             willChange: 'transform, opacity',
           }}
-          className="relative z-20 text-center text-white px-6 max-w-7xl mx-auto pointer-events-auto"
+          className="relative z-20 text-center text-white px-4 max-w-7xl mx-auto pointer-events-auto"
         >
           <motion.div
-            className="mb-8"
+            className="mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="text-sm tracking-wider text-gray-400 uppercase">
+            <span className="text-xs sm:text-sm tracking-wider text-gray-400 uppercase whitespace-nowrap">
               Based in Lebanon • Available Worldwide
             </span>
           </motion.div>
 
-          {/* Bold typography matching HorizontalScrollSection */}
+          {/* Mobile-optimized typography - single line names */}
           <motion.h1 
-            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tighter"
+            className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-4 tracking-tighter whitespace-nowrap"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
@@ -106,7 +107,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
           </motion.h1>
 
           <motion.h2 
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 tracking-wide text-white"
+            className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-wide text-white whitespace-nowrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
@@ -114,15 +115,8 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
             Full Stack Web Developer
           </motion.h2>
           
-          <motion.div
-            className="w-24 h-px bg-white mx-auto mb-8"
-            initial={{ width: 0 }}
-            animate={{ width: 96 }}
-            transition={{ duration: 1, delay: 1 }}
-          />
-          
           <motion.p 
-            className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed font-bold"
+            className="text-sm sm:text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed font-bold px-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.8 }}
@@ -131,13 +125,13 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
           </motion.p>
 
           <motion.div 
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.2 }}
           >
             <motion.button 
-              className="px-8 py-3 border border-white text-white hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-wider uppercase font-bold cursor-pointer"
+              className="px-6 sm:px-8 py-3 border border-white text-white hover:bg-white hover:text-black transition-all duration-300 text-xs sm:text-sm tracking-wider uppercase font-bold cursor-pointer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
@@ -151,7 +145,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
             </motion.button>
             
             <motion.button 
-              className="px-8 py-3 text-gray-400 hover:text-white transition-all duration-300 text-sm tracking-wider uppercase font-bold cursor-pointer"
+              className="px-6 sm:px-8 py-3 text-gray-400 hover:text-white transition-all duration-300 text-xs sm:text-sm tracking-wider uppercase font-bold cursor-pointer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               style={{ willChange: 'transform' }}
@@ -166,20 +160,34 @@ const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
             </motion.button>
           </motion.div>
 
-          {/* Clean tech stack - matching the minimal approach */}
+          {/* Mobile-optimized tech stack */}
           <motion.div 
-            className="mt-16 flex flex-wrap justify-center gap-8 text-xs tracking-widest text-gray-400 uppercase font-bold"
+            className="mt-12 sm:mt-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.5 }}
           >
-            <span>React & Next.js</span>
-            <span>•</span>
-            <span>Node.js & Express</span>
-            <span>•</span>
-            <span>Database Design</span>
-            <span>•</span>
-            <span>API Development</span>
+            {/* Mobile: Stack vertically */}
+            <div className="flex flex-wrap justify-center gap-2 text-xs tracking-widest text-gray-400 uppercase font-bold sm:hidden">
+              <span>React & Next.js</span>
+              <span>•</span>
+              <span>Node.js & Express</span>
+              <span>•</span>
+              <span>Database Design</span>
+              <span>•</span>
+              <span>API Development</span>
+            </div>
+                        
+            {/* Desktop: Horizontal with separators */}
+            <div className="hidden sm:flex flex-wrap justify-center gap-4 lg:gap-8 text-xs tracking-widest text-gray-400 uppercase font-bold">
+              <span>React & Next.js</span>
+              <span>•</span>
+              <span>Node.js & Express</span>
+              <span>•</span>
+              <span>Database Design</span>
+              <span>•</span>
+              <span>API Development</span>
+            </div>
           </motion.div>
         </motion.div>
 
