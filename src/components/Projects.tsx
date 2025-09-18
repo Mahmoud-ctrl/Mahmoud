@@ -45,7 +45,7 @@ const projects: Project[] = [
     tech: ["React", "Python", "Blockchain", "AI"],
     github: "https://github.com/Mahmoud-ctrl/XSignalsAI",
     live: "https://xsignalsai.com",
-    year: "2024",
+    year: "2025",
     category: "Crypto/AI"
   },
   {
