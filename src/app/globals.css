@@ -1,28 +1,46 @@
 @import "tailwindcss";
 
+/* ── SIGNAL design tokens ─────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0a0a12;
+  --bg-elevated: #12121e;
+  --ink: #f2f2eb;
+  --muted: #8b8b9c;
+  --accent: #ff4d00;
+  --accent-glow: #ff4d0026;
+  --terminal: #34ff6d;
+  --line: #ffffff14;
+  --ink-ghost: #f2f2eb0a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-glow: var(--accent-glow);
+  --color-terminal: var(--terminal);
+  --color-line: var(--line);
+  --color-ink-ghost: var(--ink-ghost);
+
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-serif: var(--font-playfair), serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* No CSS smooth scrolling — Lenis drives scroll per-frame, and
+   scroll-behavior: smooth would re-animate every write it makes. */
+html {
+  scroll-behavior: auto;
+  overflow-x: clip;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-space-grotesk), sans-serif;
+  overflow-x: clip;
 }
 
 * {
@@ -30,18 +48,142 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Reduce paint complexity during scroll */
-.hero-section {
-  backface-visibility: hidden;
-  perspective: 1000px;
+::selection {
+  background: var(--accent);
+  color: var(--bg);
 }
 
-/* Optimize motion elements */
-[data-framer-motion] {
-  transform-style: preserve-3d;
+/* Custom cursor only on precise pointers — never hide the touch cursor */
+@media (pointer: fine) {
+  .cursor-hidden,
+  .cursor-hidden * {
+    cursor: none !important;
+  }
 }
 
-* {
-  cursor: none !important;
+/* ── Utilities ────────────────────────────────────────────────────── */
+
+/* Giant outline/watermark type */
+.text-ghost {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(242, 242, 235, 0.14);
 }
 
+.text-ghost-fill {
+  color: var(--ink-ghost);
+}
+
+/* Mono uppercase tracked label */
+.eyebrow {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@utility hairline {
+  border-color: var(--line);
+}
+
+/* Underline draw on hover */
+.link-draw {
+  position: relative;
+}
+.link-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.link-draw:hover::after,
+.link-draw:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ── Marquee ──────────────────────────────────────────────────────── */
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.animate-marquee-left {
+  animation: marquee-left 40s linear infinite;
+  will-change: transform;
+}
+.animate-marquee-right {
+  animation: marquee-right 40s linear infinite;
+  will-change: transform;
+}
+.marquee-row:hover .animate-marquee-left,
+.marquee-row:hover .animate-marquee-right {
+  animation-play-state: paused;
+}
+
+/* Pulsing status dot */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Terminal caret blink */
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.animate-caret {
+  animation: caret-blink 0.9s step-end infinite;
+}
+
+/* Focus visibility */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── Reduced motion kill-switch ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

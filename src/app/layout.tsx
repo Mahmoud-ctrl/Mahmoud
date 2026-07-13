@@ -1,26 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { spaceGrotesk, playfair, jetbrainsMono } from "@/lib/fonts";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Portfolio | Mahmoud Baderaldin",
-  description: "Full-stack developer creating high-performance, user-friendly web apps.",
-  keywords: "portfolio, web developer, React, Next.js, full-stack, JavaScript, Node.js, developer, web applications",
-  authors: [{ name: "Mahmud Baderaldin" }],
+  title: "Mahmoud Baderaldin — Full-Stack Engineer",
+  description:
+    "Signal over noise. Full-stack engineer from Lebanon building products that load fast, work everywhere, and make money.",
+  keywords:
+    "portfolio, web developer, React, Next.js, full-stack, TypeScript, Node.js, Flask, PostgreSQL, Lebanon",
+  authors: [{ name: "Mahmoud Baderaldin" }],
   openGraph: {
-    title: "My Portfolio",
-    description: "Full-stack developer creating high-performance, user-friendly web apps.",
-    siteName: "Mahmud Baderaldin",
+    title: "Mahmoud Baderaldin — Full-Stack Engineer",
+    description:
+      "Signal over noise. Full-stack engineer building products that load fast, work everywhere, and make money.",
+    siteName: "Mahmoud Baderaldin",
     images: [
       {
         url: "https://lebwork.b-cdn.net/stuff/og%20mahmud.png",
@@ -55,7 +48,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${playfair.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
       </body>

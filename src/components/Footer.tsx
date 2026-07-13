@@ -1,174 +1,110 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { navItems, profile } from '@/data/portfolio';
+import Magnetic from '@/components/ui/Magnetic';
 
-const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+function useBeirutClock() {
+  const [time, setTime] = useState('');
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'Asia/Beirut',
+    });
+    const tick = () => setTime(fmt.format(new Date()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return time;
+}
 
-  const smoothScrollTo = (elementId: string) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const navbarHeight = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, link: string) => {
-    e.preventDefault();
-    const sectionId = link.replace('#', '');
-    smoothScrollTo(sectionId);
-  };
-
-  const navLinks = [
-    { label: 'Home', link: '#home' },
-    { label: 'Services', link: '#services' },
-    { label: 'Projects', link: '#projects' },
-    { label: 'Contact', link: '#contact' }
-  ];
-
-  const socialLinks = [
-    { label: 'GitHub', link: 'https://github.com/Mahmoud-ctrl' },
-    { label: 'CV', link: 'https://lebwork.b-cdn.net/stuff/Mahmoud_Baderaldin_CV.docx' },
-    { label: 'LinkedIn', link: 'https://www.linkedin.com/in/mahmoud-baderaldin-540399378/' }
-  ];
+export default function Footer() {
+  const time = useBeirutClock();
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-black border-t border-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-          <motion.div 
-            className="flex items-center space-x-4"
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Image 
-                src="https://lebwork.b-cdn.net/stuff/mm-logo.png" 
-                alt="iDevelopit Logo" 
-                width={40}
-                height={40}
-                className="w-10 h-10"
-              />
-            </motion.div>
-            <div className="flex flex-col">
-              <span className="text-white font-light text-lg tracking-wider">
-                Mahmoud Baderaldin
-              </span>
-              <span className="text-gray-400 text-xs tracking-wide">
-                Digital Solutions
-              </span>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            className="flex items-center space-x-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-          >
-            {navLinks.map((link) => (
-              <motion.a
-                key={link.label}
-                href={link.link}
-                onClick={(e) => handleNavClick(e, link.link)}
-                className="text-gray-400 hover:text-white transition-colors duration-300 text-sm tracking-wide uppercase relative group"
-                whileHover={{ y: -2 }}
-                transition={{ duration: 0.2 }}
-              >
-                {link.label}
-                <motion.span
-                  className="absolute -bottom-1 left-0 h-px bg-white w-0 group-hover:w-full transition-all duration-300"
-                />
-              </motion.a>
+    <footer className="relative overflow-hidden border-t hairline" aria-label="Footer">
+      <div className="grid gap-12 px-6 py-16 md:grid-cols-3 md:px-12 md:py-20">
+        {/* Socials */}
+        <div>
+          <p className="eyebrow mb-5">Connect</p>
+          <ul className="space-y-3">
+            {profile.socials.map((s) => (
+              <li key={s.label}>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-draw font-mono text-sm text-ink"
+                >
+                  {s.label} — {s.handle}
+                </a>
+              </li>
             ))}
-          </motion.div>
-
-          <motion.div 
-            className="flex items-center space-x-6"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            {socialLinks.map((social) => (
-              <motion.a
-                key={social.label}
-                href={social.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 hover:text-white transition-colors duration-300 text-sm tracking-wide"
-                whileHover={{ scale: 1.1, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-              >
-                {social.label}
-              </motion.a>
-            ))}
-          </motion.div>
+            <li>
+              <a href={`mailto:${profile.email}`} className="link-draw font-mono text-sm text-ink">
+                {profile.email}
+              </a>
+            </li>
+            <li>
+              <a href={profile.phoneHref} className="link-draw font-mono text-sm text-ink">
+                {profile.phone}
+              </a>
+            </li>
+          </ul>
         </div>
 
-        <motion.div 
-          className="w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-8"
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          viewport={{ once: true }}
-        />
+        {/* Nav */}
+        <div>
+          <p className="eyebrow mb-5">Index</p>
+          <ul className="space-y-3">
+            {navItems.map((item, i) => (
+              <li key={item.href}>
+                <a href={item.href} className="link-draw font-mono text-sm text-ink">
+                  <span className="mr-3 text-accent">0{i + 1}</span>
+                  {item.label.toUpperCase()}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <motion.div 
-          className="flex flex-col md:flex-row items-center justify-between gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
-          <div className="text-gray-500 text-xs tracking-wide">
-            © {currentYear} Mahmoud Baderaldin. All rights reserved.
+        {/* Telemetry */}
+        <div className="font-mono text-xs leading-7 text-muted">
+          <p className="eyebrow mb-5">Telemetry</p>
+          <p>
+            LOCAL TIME — <span className="text-ink tabular-nums">{time || '--:--:--'}</span> BEIRUT
+          </p>
+          <p>
+            VERSION — <span className="text-terminal">v3.0.0 · main@a3f9c2e</span>
+          </p>
+          <p>STACK — NEXT 15 · REACT 19 · TAILWIND 4</p>
+          <p>
+            © {year} {profile.name.toUpperCase()} — SIGNAL OVER NOISE
+          </p>
+          <div className="mt-6">
+            <Magnetic>
+              <a
+                href="#top"
+                aria-label="Back to top"
+                className="inline-block border hairline px-4 py-3 font-mono text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+              >
+                [ ↑ ]
+              </a>
+            </Magnetic>
           </div>
+        </div>
+      </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs tracking-widest text-gray-600 uppercase">
-            <span>Web Development</span>
-            <span className="text-gray-700">•</span>
-            <span>Custom Systems</span>
-            <span className="text-gray-700">•</span>
-            <span>UI/UX Design</span>
-            <span className="text-gray-700">•</span>
-            <span>Brand Strategy</span>
-          </div>
-
-          <motion.button
-            onClick={(e) => handleNavClick(e, '#home')}
-            className="text-gray-500 hover:text-white transition-colors duration-300 text-xs tracking-wide uppercase group flex items-center space-x-2"
-            whileHover={{ y: -2 }}
-            whileTap={{ y: 0 }}
-          >
-            <span>Back to Top</span>
-            <motion.span
-              className="group-hover:-translate-y-1 transition-transform duration-300"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            >
-              ↑
-            </motion.span>
-          </motion.button>
-        </motion.div>
+      {/* Ghost name bleeding off the bottom */}
+      <div aria-hidden className="pointer-events-none select-none overflow-hidden">
+        <p className="text-ghost -mb-[0.24em] whitespace-nowrap text-center font-display text-[clamp(4rem,14vw,13rem)] font-bold leading-none tracking-tight">
+          BADERALDIN
+        </p>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

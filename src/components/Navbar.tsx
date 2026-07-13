@@ -1,254 +1,143 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import StaggeredMenu from './ui/StaggeredMenu';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
+import { navItems, profile } from '@/data/portfolio';
+import Magnetic from '@/components/ui/Magnetic';
 
-interface NavbarProps {
-  scrollProgress?: number;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ scrollProgress = 0 }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  
-  const isScrolled = scrollProgress > 0.1;
-
-  const navItems = useMemo(() => [
-    { label: 'Home', ariaLabel: 'Go to Home section', link: '#home' },
-    { label: 'Services', ariaLabel: 'Go to Services section', link: '#services' },
-    { label: 'Projects', ariaLabel: 'Go to Projects section', link: '#projects' },
-    { label: 'Contact', ariaLabel: 'Go to Contact section', link: '#contact' },
-  ], []);
-
-  const socialItems = [
-    { label: 'GitHub', link: 'https://github.com/Mahmoud-ctrl' },
-    { label: 'CV', link: 'https://lebwork.b-cdn.net/stuff/Mahmoud_Baderaldin_CV.docx' },
-    { label: 'LinkedIn', link: 'https://www.linkedin.com/in/mahmoud-baderaldin-540399378/' }
-  ];
-  
-  const smoothScrollTo = (elementId: string) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const navbarHeight = 80; 
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, link: string) => {
-    e.preventDefault();
-    const sectionId = link.replace('#', '');
-    smoothScrollTo(sectionId);
-    setIsMobileMenuOpen(false);
-  };
-  useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -80% 0px',
-      threshold: 0
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    navItems.forEach((item) => {
-      const sectionId = item.link.replace('#', '');
-      const section = document.getElementById(sectionId);
-      if (section) {
-        observer.observe(section);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [navItems]);
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40 });
 
   useEffect(() => {
-    const body = document.body;
-    if (isMobileMenuOpen) {
-      body.style.overflow = 'hidden';
-    } else {
-      body.style.overflow = '';
-    }
-
-    return () => {
-      body.style.overflow = '';
-    };
-  }, [isMobileMenuOpen]);
-
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      html {
-        scroll-behavior: smooth;
-      }
-      
-      /* Custom scrollbar for webkit browsers */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      
-      ::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.1);
-      }
-      
-      ::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 4px;
-      }
-      
-      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.5);
-      }
-    `;
-    document.head.appendChild(style);
-
-    return () => {
-      document.head.removeChild(style);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.style.overflow = menuOpen ? 'hidden' : '';
+    return () => {
+      document.documentElement.style.overflow = '';
+    };
+  }, [menuOpen]);
 
   return (
     <>
-      <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-          isScrolled ? 'py-4' : 'py-6'
+      {/* Scroll progress hairline */}
+      <motion.div
+        className="fixed inset-x-0 top-0 z-[80] h-px origin-left bg-accent"
+        style={{ scaleX: progress }}
+        aria-hidden
+      />
+
+      <header
+        className={`fixed inset-x-0 top-0 z-[70] transition-colors duration-300 ${
+          scrolled ? 'border-b hairline bg-bg/70 backdrop-blur-md' : 'bg-transparent'
         }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <AnimatePresence>
-          {isScrolled && (
-            <motion.div
-              className="absolute inset-0 backdrop-blur-md"
-              style={{
-                background: 'rgba(0, 0, 0, 0.8)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-              }}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            />
-          )}
-        </AnimatePresence>
+        <nav className="flex items-center justify-between px-6 py-4 md:px-12" aria-label="Primary">
+          <a href="#top" className="font-mono text-sm font-medium tracking-widest text-ink">
+            MB<span className="text-accent">©</span>
+          </a>
 
-        <div className="relative max-w-7xl mx-auto px-6 flex items-center justify-between h-12">
-          <motion.div
-            className="hidden md:block text-white font-light text-xl tracking-wider"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <a 
-              href="#home" 
-              className="block"
-              onClick={(e) => handleNavClick(e, '#home')}
-            >
-              <Image 
-                src="https://lebwork.b-cdn.net/stuff/mm-logo.png" 
-                alt="Mahmoud Logo" 
-                width={48}
-                height={48}
-                className="w-18 h-18" 
-              />
-            </a>
-          </motion.div>
-
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item, index) => {
-              const sectionId = item.link.replace('#', '');
-              const isActive = activeSection === sectionId;
-              
-              return (
-                <motion.a
-                  key={item.label}
-                  href={item.link}
-                  aria-label={item.ariaLabel}
-                  onClick={(e) => handleNavClick(e, item.link)}
-                  className={`text-sm tracking-wider transition-colors duration-300 uppercase relative group ${
-                    isActive 
-                      ? 'text-white' 
-                      : 'text-gray-300 hover:text-white'
-                  }`}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 * index }}
-                  whileHover={{ y: -2 }}
+          {/* Desktop links */}
+          <ul className="hidden items-center gap-8 md:flex">
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  className="link-draw font-mono text-xs uppercase tracking-[0.18em] text-muted transition-colors hover:text-ink"
                 >
                   {item.label}
-                  <motion.span
-                    className={`absolute -bottom-1 left-0 h-px bg-white transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
-                  />
-                </motion.a>
-              );
-            })}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex items-center gap-6">
+            <Magnetic>
+              <a
+                href="#contact"
+                className="hidden items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-ink md:flex"
+              >
+                <span className="animate-pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-terminal" />
+                Open for work
+              </a>
+            </Magnetic>
+
+            {/* Mobile menu toggle */}
+            <button
+              className="font-mono text-xs uppercase tracking-[0.18em] text-ink md:hidden"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {menuOpen ? '[ CLOSE ]' : '[ MENU ]'}
+            </button>
           </div>
+        </nav>
+      </header>
 
-          <motion.button
-            className="hidden md:block px-6 py-2 border border-white text-white hover:bg-white hover:text-black transition-all duration-300 text-xs tracking-wider uppercase"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={(e) => handleNavClick(e, '#contact')}
-          >
-            Let&apos;s Talk
-          </motion.button>
-        </div>
-      </motion.nav>
-
+      {/* Full-screen mobile menu */}
       <AnimatePresence>
-        <motion.div
-          className="fixed inset-0 z-50 overflow-hidden md:hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <StaggeredMenu
-            position="right"
-            items={navItems.map(item => ({
-              ...item,
-              onClick: (e: React.MouseEvent<HTMLAnchorElement>) => handleNavClick(e, item.link)
-            }))}
-            socialItems={socialItems}
-            displaySocials={true}
-            displayItemNumbering={true}
-            menuButtonColor="#fff"
-            openMenuButtonColor="#fff"
-            changeMenuColorOnOpen={false}
-            colors={['#B19EEF', '#5227FF']}
-            logoUrl='https://lebwork.b-cdn.net/stuff/mm-logo.png'
-            accentColor="#ff6b6b"
-            onMenuOpen={() => console.log('Menu opened')}
-            onMenuClose={() => {
-              console.log('Menu closed');
-              setIsMobileMenuOpen(false);
-            }}
-          />
-        </motion.div>
+        {menuOpen && (
+          <motion.div
+            className="fixed inset-0 z-[65] flex flex-col justify-between bg-bg px-6 pb-10 pt-24"
+            initial={{ opacity: 0, y: -24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -24 }}
+            transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }}
+          >
+            <ul className="space-y-2">
+              {navItems.map((item, i) => (
+                <li key={item.href} className="overflow-hidden">
+                  <motion.a
+                    href={item.href}
+                    className="block font-display text-5xl font-bold uppercase leading-tight tracking-tight text-ink"
+                    initial={{ y: '110%' }}
+                    animate={{ y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.08 * i, ease: [0.65, 0, 0.35, 1] }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <span className="mr-4 font-mono text-sm text-accent">0{i + 1}</span>
+                    {item.label}
+                  </motion.a>
+                </li>
+              ))}
+            </ul>
+
+            <div className="space-y-4 border-t hairline pt-6">
+              <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-terminal">
+                <span className="animate-pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-terminal" />
+                Open for work
+              </p>
+              <div className="flex flex-wrap gap-6">
+                {profile.socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-draw font-mono text-xs uppercase tracking-[0.18em] text-muted"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="link-draw font-mono text-xs uppercase tracking-[0.18em] text-muted"
+                >
+                  Email
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </>
   );
-};
-
-export default Navbar;
+}

@@ -1,39 +1,40 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import Hero from "@/components/Hero";
-import Projects from "@/components/Projects";
-import Navbar from "@/components/Navbar";
-import AboutSection from "@/components/About";
-import ServicesSection from "@/components/Services";
-import HorizontalScroll from "@/components/ScrollTransition";
-import ContactForm from "@/components/Contact";
-import Footer from "@/components/Footer";
-import { SmoothCursor } from "@/components/ui/smooth-cursor";
-
+import { useState } from 'react';
+import SmoothScrollProvider from '@/components/providers/SmoothScrollProvider';
+import GrainOverlay from '@/components/ui/GrainOverlay';
+import SmoothCursor from '@/components/ui/smooth-cursor';
+import Preloader from '@/components/Preloader';
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import Manifesto from '@/components/Manifesto';
+import About from '@/components/About';
+import Capabilities from '@/components/Capabilities';
+import Works from '@/components/Works';
+import Marquee from '@/components/ui/Marquee';
+import Contact from '@/components/Contact';
+import Footer from '@/components/Footer';
+import { marqueeItems } from '@/data/portfolio';
 
 export default function Home() {
-  const [heroScrollProgress, setHeroScrollProgress] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [booted, setBooted] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-  
   return (
-    <div className="cursor-none">
-      {!isMobile && <SmoothCursor />}
-      <Navbar scrollProgress={heroScrollProgress} />
-      <Hero onScrollProgress={setHeroScrollProgress}/>
-      <AboutSection />
-      <ServicesSection />
-      <Projects heroScrollProgress={heroScrollProgress}/>
-      <HorizontalScroll />
-      <ContactForm />
+    <SmoothScrollProvider>
+      <Preloader onComplete={() => setBooted(true)} />
+      <GrainOverlay />
+      <SmoothCursor />
+      <Navbar />
+      <main id="top">
+        <Hero start={booted} />
+        <Manifesto />
+        <About />
+        <Capabilities />
+        <Works />
+        <Marquee items={marqueeItems} />
+        <Contact />
+      </main>
       <Footer />
-    </div>
+    </SmoothScrollProvider>
   );
 }

@@ -1,68 +1,113 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import RotatingText from './RotatingText';
-import { SparklesText } from './ui/sparkles-text';
+import { useRef } from 'react';
+import Image from 'next/image';
+import { motion, useScroll, useTransform, useInView } from 'motion/react';
+import { about, profile } from '@/data/portfolio';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import SectionHeading from '@/components/ui/SectionHeading';
+import Magnetic from '@/components/ui/Magnetic';
 
-const AboutSection = () => {
+export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { amount: 0.3, once: true });
+  const photoRef = useRef<HTMLDivElement>(null);
+  const reduced = usePrefersReducedMotion();
+  const photoInView = useInView(photoRef, { amount: 0.45, once: true });
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"]
+    offset: ['start end', 'end start'],
   });
-  
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [100, 0, 0, -100]);
-  
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [-40, 40]);
+
   return (
-    <section 
-      id="about" 
+    <section
       ref={sectionRef}
-      className="relative py-12 md:py-20 overflow-hidden bg-black"
+      id="about"
+      className="border-t hairline px-6 py-28 md:px-12 md:py-44"
+      aria-label="About"
     >
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-48 h-48 md:w-96 md:h-96 bg-purple-500/20 rounded-full blur-xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 md:w-96 md:h-96 bg-blue-500/20 rounded-full blur-xl"></div>
-      </div>
+      <SectionHeading eyebrow={about.eyebrow} title="THE OPERATOR" className="mb-16 md:mb-24" />
 
-      <div
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6"
-      >
-        <div className="items-center">
-          <div 
-            className="space-y-4 md:space-y-6"
-          >
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-              Hi, I&apos;m Mahmoud 👋
-            </h3>
-
-            <div className="text-gray-300 leading-relaxed font-bold">
-
-              <div className=" lg:block text-3xl xl:text-4xl 2xl:text-[62px] leading-tight">
-                <span>Full-stack developer from Lebanon, building responsive </span>
-                <RotatingText
-                  texts={['powerful', 'scalable', 'intuitive', 'modern', 'efficient']}
-                  mainClassName="bg-white text-black overflow-hidden py-1 px-3 justify-center rounded-lg inline-flex items-center mx-2"
-                  staggerFrom={"last"}  
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "-120%" }}
-                  staggerDuration={0.025}
-                  splitLevelClassName="overflow-hidden"
-                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                  rotationInterval={3000}
-                />
-                <span> applications with a focus on great user <span className="lg:hidden">experiences.</span></span>
-                <SparklesText className="inline hidden lg:block">experiences.</SparklesText>
-              </div>
-            </div>
+      <div className="grid gap-12 md:grid-cols-12 md:gap-0">
+        {/* Photo — grayscale ignites to color when it enters view */}
+        <div className="md:col-span-5 md:pr-12">
+          <div ref={photoRef} className="relative overflow-hidden">
+            <motion.div style={reduced ? undefined : { y: parallaxY }} className="relative -my-10">
+              <Image
+                src="/mahmoud-mountain.jpg"
+                alt="Mahmoud Baderaldin in the mountains of Lebanon"
+                width={1000}
+                height={800}
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className={`w-full object-cover transition-[filter] duration-[1400ms] ease-out ${
+                  photoInView || reduced ? 'grayscale-0' : 'grayscale'
+                }`}
+              />
+            </motion.div>
           </div>
+          <p className="eyebrow mt-4">{about.photoCaption}</p>
+        </div>
+
+        {/* Editorial column with visible rule */}
+        <div className="md:col-span-7 md:border-l md:hairline md:pl-12">
+          <p className="max-w-xl font-serif text-2xl italic leading-snug text-ink md:text-3xl">
+            “{about.pullQuote}”
+          </p>
+
+          <div className="mt-10 max-w-xl space-y-6 text-base leading-relaxed text-muted md:text-lg">
+            {about.paragraphs.map((p, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.6, delay: reduced ? 0 : i * 0.12 }}
+              >
+                {p}
+              </motion.p>
+            ))}
+          </div>
+
+          {/* Facts table */}
+          <dl className="mt-12 max-w-xl">
+            {about.facts.map((fact, i) => (
+              <motion.div
+                key={fact.label}
+                className="flex items-baseline justify-between gap-6 border-t hairline py-4"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ duration: 0.5, delay: reduced ? 0 : i * 0.08 }}
+              >
+                <dt className="eyebrow">{fact.label}</dt>
+                <dd className="text-right font-mono text-sm text-ink">
+                  {fact.label === 'Status' ? (
+                    <span className="flex items-center gap-2">
+                      <span className="animate-pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-terminal" />
+                      {fact.value}
+                    </span>
+                  ) : (
+                    fact.value
+                  )}
+                </dd>
+              </motion.div>
+            ))}
+            <div className="border-t hairline" />
+          </dl>
+
+          <Magnetic className="mt-10">
+            <a
+              href={profile.cvUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block border hairline px-6 py-3 font-mono text-xs uppercase tracking-[0.18em] text-ink transition-colors hover:border-accent hover:text-accent"
+            >
+              [ Download CV ]
+            </a>
+          </Magnetic>
         </div>
       </div>
     </section>
   );
-};
-
-export default AboutSection;
+}

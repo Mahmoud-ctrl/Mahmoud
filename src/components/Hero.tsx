@@ -1,217 +1,165 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react';
-import { motion, useTransform, useScroll, useInView } from 'framer-motion';
-import LiquidEther from './ui/LiquidEther';
+import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { profile } from '@/data/portfolio';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import RevealText from '@/components/ui/RevealText';
+import Magnetic from '@/components/ui/Magnetic';
+
+const LiquidEther = dynamic(() => import('@/components/ui/LiquidEther'), { ssr: false });
+
+const HERO_LINES = ['I BUILD', 'SOFTWARE THAT', 'ACTUALLY SHIPS.'];
 
 interface HeroProps {
-  onScrollProgress?: (progress: number) => void;
+  start: boolean;
 }
 
-const Hero: React.FC<HeroProps> = ({ onScrollProgress }) => {
-  const containerRef = useRef<HTMLElement>(null);
-  const lastProgressRef = useRef(0);
-  const rafRef = useRef<number | null>(null);
-  const isHeroInView = useInView(containerRef, { amount: 0.1 });
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-
-  const throttledProgressCallback = useCallback((progress: number) => {
-    if (rafRef.current) return;
-    
-    rafRef.current = requestAnimationFrame(() => {
-      if (Math.abs(progress - lastProgressRef.current) > 0.001) {
-        onScrollProgress?.(progress);
-        lastProgressRef.current = progress;
-      }
-      rafRef.current = null;
-    });
-  }, [onScrollProgress]);
+export default function Hero({ start }: HeroProps) {
+  const ref = useRef<HTMLElement>(null);
+  const reduced = usePrefersReducedMotion();
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    return scrollYProgress.on("change", throttledProgressCallback);
-  }, [scrollYProgress, throttledProgressCallback]);
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  });
+  const textY = useTransform(scrollYProgress, [0, 1], ['0%', '-18%']);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  const showFluid = isDesktop && !reduced;
 
   return (
-    <>
-      <section 
-        id="home"
-        ref={containerRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
-        style={{ 
-          position: 'relative',
-          willChange: 'transform',
-          transform: 'translateZ(0)'
-        }}
-      >
-        {/* LiquidEther Background - Keep the unique element */}
-        <div 
-          className="absolute inset-0 pointer-events-auto"
-          style={{
-            willChange: 'auto',
-            contain: 'layout style paint',
-          }}
-        >
+    <section ref={ref} className="relative flex min-h-dvh flex-col overflow-hidden" aria-label="Intro">
+      {/* Background: WebGL fluid on desktop, static spotlight elsewhere */}
+      <div className="absolute inset-0" aria-hidden>
+        {showFluid ? (
           <LiquidEther
-            colors={['#5227FF', '#ffffff', '#888888']}
-            mouseForce={20}
-            cursorSize={100}
-            isViscous={false}
-            viscous={30}
-            iterationsViscous={32}
-            iterationsPoisson={32}
+            colors={['#FF4D00', '#1A1A2E', '#3D2010']}
+            mouseForce={18}
+            cursorSize={110}
             resolution={0.5}
-            isBounce={false}
-            autoDemo={isHeroInView}
-            autoSpeed={0.7} 
-            autoIntensity={2.8} 
-            takeoverDuration={0.5} 
-            autoResumeDelay={100}
-            autoRampDuration={0.8}
+            autoDemo
+            autoSpeed={0.4}
+            autoIntensity={1.8}
+            style={{ opacity: 0.35 }}
           />
+        ) : (
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(ellipse 80% 60% at 70% 20%, var(--accent-glow), transparent 60%)',
+            }}
+          />
+        )}
+        {/* Bottom fade so display type sits on solid ground */}
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-bg to-transparent" />
+      </div>
+
+      <motion.div
+        className="relative z-10 flex flex-1 flex-col justify-end px-6 pb-6 pt-28 md:px-12 md:pb-10"
+        style={reduced ? undefined : { y: textY, opacity: textOpacity }}
+      >
+        {/* Eyebrow */}
+        <div className="mb-8 overflow-hidden md:mb-12">
+          <motion.p
+            className="eyebrow"
+            initial={{ y: '110%' }}
+            animate={start ? { y: 0 } : {}}
+            transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+          >
+            {profile.name} — {profile.role}
+          </motion.p>
         </div>
 
-        <motion.div 
-          style={{ 
-            y, 
-            opacity,
-            willChange: 'transform, opacity',
-          }}
-          className="relative z-20 text-center text-white px-4 max-w-7xl mx-auto pointer-events-auto"
-        >
-          <motion.div
-            className="mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <span className="text-xs sm:text-sm tracking-wider text-gray-400 uppercase whitespace-nowrap">
-              Based in Lebanon • Available Worldwide
-            </span>
-          </motion.div>
-
-          {/* Mobile-optimized typography - single line names */}
-          <motion.h1 
-            className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-4 tracking-tighter whitespace-nowrap"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4 }}
-          >
-            Mahmoud Baderaldin
-          </motion.h1>
-
-          <motion.h2 
-            className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-wide text-white whitespace-nowrap"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
-          >
-            Full Stack Web Developer
-          </motion.h2>
-          
-          <motion.p 
-            className="text-sm sm:text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed font-bold px-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-          >
-            Crafting digital experiences that matter — from sleek frontends to robust backends.
-          </motion.p>
-
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.2 }}
-          >
-            <motion.button 
-              className="px-6 sm:px-8 py-3 border border-white text-white hover:bg-white hover:text-black transition-all duration-300 text-xs sm:text-sm tracking-wider uppercase font-bold cursor-pointer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => {
-                document.getElementById('contact')?.scrollIntoView({ 
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-              }}
+        {/* Display lines */}
+        <h1 className="relative font-display font-bold uppercase leading-[0.92] tracking-[-0.04em] text-ink">
+          {HERO_LINES.map((line, i) => (
+            <RevealText
+              key={line}
+              immediate={start}
+              once
+              delay={0.12 * i + 0.1}
+              className="text-[clamp(3rem,11vw,10.5rem)]"
             >
-              Hire Me              
-            </motion.button>
-            
-            <motion.button 
-              className="px-6 sm:px-8 py-3 text-gray-400 hover:text-white transition-all duration-300 text-xs sm:text-sm tracking-wider uppercase font-bold cursor-pointer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              style={{ willChange: 'transform' }}
-              onClick={() => {
-                document.getElementById('projects')?.scrollIntoView({ 
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-              }}
-            >
-              View My Work
-            </motion.button>
-          </motion.div>
-
-          {/* Mobile-optimized tech stack */}
-          <motion.div 
-            className="mt-12 sm:mt-16"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.5 }}
+              {i === 2 ? (
+                <>
+                  ACTUALLY <span className="text-accent">SHIPS.</span>
+                </>
+              ) : (
+                line
+              )}
+            </RevealText>
+          ))}
+          {/* Playfair interjection */}
+          <motion.span
+            className="pointer-events-none absolute right-[6%] top-[2%] hidden font-serif text-[clamp(1.2rem,2.4vw,2.2rem)] italic tracking-normal normal-case text-muted md:block"
+            initial={{ opacity: 0, rotate: -4 }}
+            animate={start ? { opacity: 1, rotate: -4 } : {}}
+            transition={{ delay: 0.9, duration: 0.8 }}
+            aria-hidden
           >
-            {/* Mobile: Stack vertically */}
-            <div className="flex flex-wrap justify-center gap-2 text-xs tracking-widest text-gray-400 uppercase font-bold sm:hidden">
-              <span>React & Next.js</span>
-              <span>•</span>
-              <span>Node.js & Express</span>
-              <span>•</span>
-              <span>Database Design</span>
-              <span>•</span>
-              <span>API Development</span>
-            </div>
-                        
-            {/* Desktop: Horizontal with separators */}
-            <div className="hidden sm:flex flex-wrap justify-center gap-4 lg:gap-8 text-xs tracking-widest text-gray-400 uppercase font-bold">
-              <span>React & Next.js</span>
-              <span>•</span>
-              <span>Node.js & Express</span>
-              <span>•</span>
-              <span>Database Design</span>
-              <span>•</span>
-              <span>API Development</span>
-            </div>
-          </motion.div>
-        </motion.div>
+            — obsessively.
+          </motion.span>
+        </h1>
 
-        {/* Clean scroll indicator */}
-        <motion.div 
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none"
-          style={{ 
-            opacity,
-            willChange: 'opacity' 
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 2 }}
+        {/* CTA row */}
+        <motion.div
+          className="mt-10 flex flex-wrap items-center gap-6 md:mt-14"
+          initial={{ opacity: 0, y: 16 }}
+          animate={start ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.7, duration: 0.6 }}
         >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="w-px h-16 bg-gradient-to-b from-transparent via-white to-transparent"
-            style={{ willChange: 'transform' }}
-          />
+          <Magnetic>
+            <a
+              href="#contact"
+              className="inline-block border border-accent bg-accent px-7 py-3.5 font-mono text-xs uppercase tracking-[0.18em] text-bg transition-colors hover:bg-transparent hover:text-accent"
+            >
+              Hire me →
+            </a>
+          </Magnetic>
+          <a
+            href="#work"
+            className="link-draw font-mono text-xs uppercase tracking-[0.18em] text-ink"
+          >
+            View the work
+          </a>
+          <span className="ml-auto hidden font-mono text-xs tracking-[0.18em] text-muted md:inline">
+            [ SCROLL<span className="animate-caret">_</span> ]
+          </span>
         </motion.div>
-      </section>
-    </>
+      </motion.div>
+
+      {/* Stats bar */}
+      <motion.div
+        className="relative z-10 border-t hairline"
+        initial={{ opacity: 0 }}
+        animate={start ? { opacity: 1 } : {}}
+        transition={{ delay: 1, duration: 0.8 }}
+      >
+        <dl className="grid grid-cols-2 md:grid-cols-4">
+          {profile.stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              className={`px-6 py-4 md:px-12 md:py-5 ${i > 0 ? 'border-l hairline' : ''} ${
+                i >= 2 ? 'border-t hairline md:border-t-0' : ''
+              }`}
+            >
+              <dt className="eyebrow mb-1">{stat.label}</dt>
+              <dd className="font-mono text-sm text-ink">{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </motion.div>
+    </section>
   );
-};
-
-export default Hero;
+}
